@@ -16,7 +16,7 @@ const MenuContext = createContext<MenuContextType>({
   setIsScrollLocked: () => {},
 });
 
-export function MenuProvider({ children }: { children: ReactNode }) {
+export function MenuProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrollLocked, setIsScrollLocked] = useState(true);
 
