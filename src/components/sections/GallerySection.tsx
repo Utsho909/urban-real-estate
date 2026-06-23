@@ -37,7 +37,7 @@ export default function GallerySection() {
   const y3 = useTransform(scrollYProgress, [0, 1], ["0px", "-100px"]);
 
   return (
-    <section id="gallery" ref={containerRef} className="pt-48 pb-24 bg-background relative overflow-hidden">
+    <section id="gallery" ref={containerRef} className="pt-48 pb-24 bg-sand relative overflow-hidden">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 mb-24 text-center relative z-10">
         <motion.h2 

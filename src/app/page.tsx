@@ -18,7 +18,7 @@ export default function Home() {
 
   const { scrollY } = useScroll();
   const videoParallaxY = useTransform(scrollY, [0, 800], [0, 120]);
-  const textParallaxY  = useTransform(scrollY, [0, 800], [0, -60]);
+  const textParallaxY = useTransform(scrollY, [0, 800], [0, -60]);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -46,7 +46,7 @@ export default function Home() {
   }, []);
 
   const isFullscreen = animStep <= 1;
-  const isCropped    = animStep === 2;
+  const isCropped = animStep === 2;
 
   return (
     <>
@@ -86,21 +86,51 @@ export default function Home() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.4 }}
-                    className="font-serif italic text-foreground/60 text-xl md:text-[28px]"
+                    className="font-serif italic text-black text-xl md:text-[28px]"
                   >
                     Diverse Industries, Singular Vision
                   </motion.p>
 
-                  {/* Main heading */}
-                  <motion.h1
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.9, delay: 0.55 }}
-                    className="font-sans font-medium tracking-tight text-foreground leading-[0.95]
-                               text-[13vw] md:text-[7.5vw] md:whitespace-nowrap"
-                  >
-                    Building a Legacy <br /> of Excellence
-                  </motion.h1>
+                  {/* Main heading — editorial composition */}
+                  <div className="flex flex-col gap-0">
+                    <motion.span
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.7, delay: 0.45 }}
+                      className="font-sans font-normal uppercase tracking-[0.25em] text-foreground/40 text-[11px] md:text-xs mb-3"
+                    >
+
+                    </motion.span>
+
+                    <motion.h1
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.9, delay: 0.55 }}
+                      className="font-serif font-normal tracking-tight text-foreground leading-[0.9] 
+                                 text-[15vw] md:text-[8.5vw] md:whitespace-nowrap"
+                    >
+                      Building a
+                    </motion.h1>
+
+                    <motion.h1
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.9, delay: 0.65 }}
+                      className="font-sans font-semibold tracking-tighter text-[#e4d2c2] leading-[0.85]
+                                 text-[15vw] md:text-[8.5vw] md:whitespace-nowrap"
+                    >
+                      Legacy.
+                    </motion.h1>
+
+                    <motion.p
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.8, delay: 0.8 }}
+                      className="font-serif italic text-foreground/50 text-lg md:text-2xl mt-5 md:mt-5"
+                    >
+                      — of Growth &amp; Excellence
+                    </motion.p>
+                  </div>
 
                   {/* Body copy */}
                   <motion.p
@@ -124,10 +154,10 @@ export default function Home() {
         <motion.div
           initial={false}
           animate={{
-            top:    isFullscreen ? "0px"   : (isCropped ? "25px"  : (isMobile ? "52%"  : "25px")),
-            left:   isFullscreen ? "0px"   : (isCropped ? "25px"  : (isMobile ? "16px" : "50%")),
-            width:  isFullscreen ? "100%"  : (isCropped ? "calc(100% - 50px)" : (isMobile ? "calc(100% - 32px)" : "calc(50% - 50px)")),
-            height: isFullscreen ? "100%"  : (isCropped ? "calc(100% - 50px)" : (isMobile ? "calc(48% - 32px)" : "calc(100% - 50px)")),
+            top: isFullscreen ? "0px" : (isCropped ? "25px" : (isMobile ? "52%" : "25px")),
+            left: isFullscreen ? "0px" : (isCropped ? "25px" : (isMobile ? "16px" : "50%")),
+            width: isFullscreen ? "100%" : (isCropped ? "calc(100% - 50px)" : (isMobile ? "calc(100% - 32px)" : "calc(50% - 50px)")),
+            height: isFullscreen ? "100%" : (isCropped ? "calc(100% - 50px)" : (isMobile ? "calc(48% - 32px)" : "calc(100% - 50px)")),
             borderRadius: isFullscreen ? "0px" : "6px",
           }}
           style={{ y: animStep === 3 ? videoParallaxY : 0, position: "absolute" }}

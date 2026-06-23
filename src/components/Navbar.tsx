@@ -33,6 +33,28 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      setIsOpen(false);
+      
+      const targetId = href.substring(1);
+      const targetElement = document.getElementById(targetId);
+      
+      if (targetElement) {
+        // Wait a tiny bit for the menu to start closing before scrolling
+        setTimeout(() => {
+          targetElement.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    } else {
+      setIsOpen(false);
+      if (href === "/") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+  };
+
   return (
     <>
       <motion.header
@@ -58,8 +80,8 @@ export default function Navbar() {
                 className="absolute inset-0"
               >
                 <Image
-                  src="/urbana-symbol-black.png"
-                  alt="Urbana symbol black"
+                  src="/urbana-logo-symbol-color.png"
+                  alt="Urbana symbol color"
                   fill
                   sizes="54px"
                   className="object-contain"
@@ -174,7 +196,7 @@ export default function Navbar() {
                   >
                     <Link
                       href={link.href}
-                      onClick={() => setIsOpen(false)}
+                      onClick={(e) => handleNavClick(e, link.href)}
                       className="group relative leading-none"
                       style={{ fontSize: "clamp(3rem, 7vw, 7rem)", fontWeight: 400, color: "#fff", fontFamily: "var(--font-inter)", display: "block" }}
                     >
@@ -197,7 +219,7 @@ export default function Navbar() {
               >
                 <div className="flex flex-col gap-3">
                   {secondaryLinks.map((link) => (
-                    <Link key={link.name} href={link.href} onClick={() => setIsOpen(false)} className="text-white/50 hover:text-white transition-colors duration-300 text-base font-serif italic">
+                    <Link key={link.name} href={link.href} onClick={(e) => handleNavClick(e, link.href)} className="text-white/50 hover:text-white transition-colors duration-300 text-base font-serif italic">
                       {link.name}
                     </Link>
                   ))}
