@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} antialiased scroll-smooth`}>
-      <body className="flex flex-col font-sans text-foreground bg-background selection:bg-copper/30 selection:text-champagne">
+      <body suppressHydrationWarning className="flex flex-col font-sans text-foreground bg-background selection:bg-copper/30 selection:text-champagne">
         <MenuProvider>
           <Navbar />
           <SmoothScrollProvider>
