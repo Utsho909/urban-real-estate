@@ -1,65 +1,231 @@
-import Image from "next/image";
+"use client";
+
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { Play } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { useMenu } from "@/components/MenuContext";
+
+import AboutSection from "@/components/sections/AboutSection";
+import ProjectsSection from "@/components/sections/ProjectsSection";
+import GallerySection from "@/components/sections/GallerySection";
+import ContactSection from "@/components/sections/ContactSection";
 
 export default function Home() {
+  const [animStep, setAnimStep] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { setIsScrollLocked } = useMenu();
+
+  // Parallax scroll for the hero section
+  const { scrollY } = useScroll();
+  const videoParallaxY = useTransform(scrollY, [0, 800], [0, 120]);    // video drifts slower than scroll
+  const textParallaxY  = useTransform(scrollY, [0, 800], [0, -60]);    // text drifts up faster
+  const heroOpacity    = useTransform(scrollY, [0, 600], [1, 0]);      // hero fades as you scroll
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (animStep < 3) {
+      document.body.classList.add("hide-logo");
+      setIsScrollLocked(true);
+    } else {
+      document.body.classList.remove("hide-logo");
+      setIsScrollLocked(false);
+    }
+    return () => {
+      document.body.classList.remove("hide-logo");
+      // Don't auto-unlock on unmount to prevent race conditions
+    };
+  }, [animStep, setIsScrollLocked]);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setAnimStep(1), 2000);
+    const t2 = setTimeout(() => setAnimStep(2), 3500);
+    const t3 = setTimeout(() => setAnimStep(3), 4700);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+  }, []);
+
+  const isFullscreen = animStep <= 1;
+  const isCropped    = animStep === 2;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <div ref={heroRef} className="h-screen w-full bg-background p-[25px] overflow-hidden flex flex-col relative">
+      <main className="relative w-full h-full flex flex-row pt-16">
+
+        {/* Left Content — visible only at step 3 */}
+        <div className="absolute left-0 top-0 h-full w-full z-20 pointer-events-none overflow-visible">
+          <AnimatePresence>
+            {animStep === 3 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1, delay: 0.3 }}
+                style={{ y: textParallaxY }}
+                className="w-full h-full relative overflow-visible"
+              >
+                {/* Vertical Text — far left */}
+                <div className="hidden md:flex absolute left-6 bottom-12 flex-col items-center gap-2">
+                  <span
+                    className="text-[10px] font-medium tracking-widest text-foreground/40 uppercase"
+                    style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+                  >
+                    01 Services
+                  </span>
+                </div>
+
+                {/* Subtitle */}
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  className="absolute left-6 md:left-20 font-serif italic text-foreground/70"
+                  style={{ top: "255px", fontSize: "32px" }}
+                >
+                  Diverse Industries, Singular Vision
+                </motion.p>
+
+                {/* Main heading */}
+                <motion.h1
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.9, delay: 0.55 }}
+                  className="absolute left-6 md:left-20 text-[7.5vw] leading-[0.9] font-sans font-normal tracking-tight text-foreground whitespace-nowrap"
+                  style={{ top: `${255 + 28 + 73.333}px` }}
+                >
+                  Building a Legacy <br /> of Excellence
+                </motion.h1>
+
+                {/* Body copy */}
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.8 }}
+                  className="absolute bottom-10 left-6 md:left-20 font-serif italic text-base md:text-lg text-foreground/70 leading-relaxed max-w-xs"
+                >
+                  Expanding into new ventures across Real Estate, Hospitality, and beyond.
+                </motion.p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+
+        {/* Video container — morphs through steps + parallax on scroll */}
+        <motion.div
+          initial={false}
+          animate={{
+            top:    isFullscreen ? "-25px"  : (isCropped ? "25px"  : "180px"),
+            left:   isFullscreen ? "-25px"  : (isCropped ? "25px"  : (isMobile ? "0%"   : "50%")),
+            width:  isFullscreen ? "100vw"  : (isCropped ? "calc(100% - 50px)" : (isMobile ? "100%" : "50%")),
+            height: isFullscreen ? "100vh"  : (isCropped ? "calc(100% - 50px)" : "calc(100% - 180px)"),
+            borderRadius: isFullscreen ? "0px" : "6px",
+          }}
+          style={{ y: animStep === 3 ? videoParallaxY : 0 }}
+          transition={{ duration: 1.3, ease: [0.76, 0, 0.24, 1] }}
+          className="absolute z-10 flex items-center justify-center overflow-hidden bg-black"
+        >
+          <motion.video
+            src="/videos/hero.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{ scale: 1.08 }} // slight over-scale so parallax never shows edges
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+
+          {/* Step 0 — Logo */}
+          <AnimatePresence>
+            {animStep === 0 && (
+              <motion.div
+                key="urbana"
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -14 }}
+                transition={{ duration: 0.7 }}
+                className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/urbana-white-logo.png"
+                  alt="Urbana"
+                  className="w-64 md:w-96 max-w-[70%] drop-shadow-2xl select-none"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Dark shade during intro */}
+          <AnimatePresence>
+            {animStep <= 1 && (
+              <motion.div
+                key="shade"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.6 }}
+                className="absolute inset-0 bg-black/50 z-20 pointer-events-none"
+              />
+            )}
+          </AnimatePresence>
+
+          {/* Step 1 — tagline */}
+          <AnimatePresence>
+            {animStep === 1 && (
+              <motion.div
+                key="tagline"
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -14 }}
+                transition={{ duration: 0.7 }}
+                className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none px-8"
+              >
+                <p className="text-white text-3xl md:text-5xl font-serif italic text-center drop-shadow-xl select-none leading-snug">
+                  A Legacy of Growth &amp; Excellence
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Fade from black on mount */}
+          <motion.div
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+            className="absolute inset-0 bg-black z-40 pointer-events-none"
+          />
+
+          {/* Play Showreel */}
+          <AnimatePresence>
+            {animStep === 3 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1, delay: 1 }}
+                className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center justify-center cursor-pointer group/btn z-30"
+              >
+                <button className="w-12 h-12 rounded-full border border-white/50 flex items-center justify-center text-white backdrop-blur-sm group-hover/btn:scale-105 transition-transform mb-3 bg-white/10">
+                  <Play fill="currentColor" size={14} className="ml-1" />
+                </button>
+                <span className="text-white text-sm font-medium tracking-wide drop-shadow-md">
+                  Play showreel
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
       </main>
-    </div>
+      </div>
+
+      <AboutSection />
+      <ProjectsSection />
+      <GallerySection />
+      <ContactSection />
+    </>
   );
 }
