@@ -16,11 +16,9 @@ export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null);
   const { setIsScrollLocked } = useMenu();
 
-  // Parallax scroll for the hero section
   const { scrollY } = useScroll();
-  const videoParallaxY = useTransform(scrollY, [0, 800], [0, 120]);    // video drifts slower than scroll
-  const textParallaxY  = useTransform(scrollY, [0, 800], [0, -60]);    // text drifts up faster
-  const heroOpacity    = useTransform(scrollY, [0, 600], [1, 0]);      // hero fades as you scroll
+  const videoParallaxY = useTransform(scrollY, [0, 800], [0, 120]);
+  const textParallaxY  = useTransform(scrollY, [0, 800], [0, -60]);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -37,10 +35,7 @@ export default function Home() {
       document.body.classList.remove("hide-logo");
       setIsScrollLocked(false);
     }
-    return () => {
-      document.body.classList.remove("hide-logo");
-      // Don't auto-unlock on unmount to prevent race conditions
-    };
+    return () => { document.body.classList.remove("hide-logo"); };
   }, [animStep, setIsScrollLocked]);
 
   useEffect(() => {
@@ -55,21 +50,27 @@ export default function Home() {
 
   return (
     <>
-      <div ref={heroRef} className="h-screen w-full bg-background p-[25px] overflow-hidden flex flex-col relative">
-      <main className="relative w-full h-full flex flex-row pt-16">
+      <div ref={heroRef} className="h-screen w-full bg-background overflow-hidden relative">
 
-        {/* Left Content — visible only at step 3 */}
-        <div className="absolute left-0 top-0 h-full w-full z-20 pointer-events-none overflow-visible">
-          <AnimatePresence>
-            {animStep === 3 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 0.3 }}
-                style={{ y: textParallaxY }}
-                className="w-full md:w-1/2 h-full relative overflow-visible px-6 md:px-20 flex flex-col justify-center pt-24 md:pt-0"
-              >
-                {/* Vertical Text — far left */}
+        {/* ── Text layer (always on top) ── */}
+        <AnimatePresence>
+          {animStep === 3 && (
+            <motion.div
+              key="text-layer"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.3 }}
+              style={{ y: textParallaxY }}
+              className="absolute inset-0 z-20 pointer-events-none flex flex-col md:flex-row"
+            >
+              {/* Left / top half: text */}
+              <div className="
+                w-full md:w-1/2 h-[52%] md:h-full
+                flex flex-col justify-center
+                px-6 md:pl-20 md:pr-8
+                pt-20 md:pt-0
+              ">
+                {/* Vertical label — desktop only */}
                 <div className="hidden md:flex absolute left-6 bottom-12 flex-col items-center gap-2">
                   <span
                     className="text-[10px] font-medium tracking-widest text-foreground/40 uppercase"
@@ -79,13 +80,13 @@ export default function Home() {
                   </span>
                 </div>
 
-                <div className="flex flex-col gap-6 md:gap-8 max-w-xl">
+                <div className="flex flex-col gap-4 md:gap-6">
                   {/* Subtitle */}
                   <motion.p
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.4 }}
-                    className="font-serif italic text-foreground/70 text-2xl md:text-[32px]"
+                    className="font-serif italic text-foreground/60 text-xl md:text-[28px]"
                   >
                     Diverse Industries, Singular Vision
                   </motion.p>
@@ -95,7 +96,8 @@ export default function Home() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.9, delay: 0.55 }}
-                    className="text-[11vw] md:text-[7.5vw] leading-[0.9] font-sans font-normal tracking-tight text-foreground whitespace-nowrap"
+                    className="font-sans font-medium tracking-tight text-foreground leading-[0.95]
+                               text-[13vw] md:text-[7.5vw] md:whitespace-nowrap"
                   >
                     Building a Legacy <br /> of Excellence
                   </motion.h1>
@@ -105,29 +107,32 @@ export default function Home() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.8 }}
-                    className="font-serif italic text-base md:text-lg text-foreground/70 leading-relaxed max-w-xs md:mt-12"
+                    className="font-serif italic text-base text-foreground/60 leading-relaxed max-w-xs md:mt-6 ml-12 md:ml-0"
                   >
                     Expanding into new ventures across Real Estate, Hospitality, and beyond.
                   </motion.p>
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+              </div>
 
-        {/* Video container — morphs through steps + parallax on scroll */}
+              {/* Right / bottom half: empty — video sits here */}
+              <div className="w-full md:w-1/2 h-[48%] md:h-full" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ── Video container ── */}
         <motion.div
           initial={false}
           animate={{
-            top:    isFullscreen ? "-25px"  : (isCropped ? "25px"  : (isMobile ? "50%" : "180px")),
-            left:   isFullscreen ? "-25px"  : (isCropped ? "25px"  : (isMobile ? "0%"   : "50%")),
-            width:  isFullscreen ? "100vw"  : (isCropped ? "calc(100% - 50px)" : (isMobile ? "100%" : "50%")),
-            height: isFullscreen ? "100vh"  : (isCropped ? "calc(100% - 50px)" : (isMobile ? "50%" : "calc(100% - 180px)")),
+            top:    isFullscreen ? "0px"   : (isCropped ? "25px"  : (isMobile ? "52%"  : "25px")),
+            left:   isFullscreen ? "0px"   : (isCropped ? "25px"  : (isMobile ? "16px" : "50%")),
+            width:  isFullscreen ? "100%"  : (isCropped ? "calc(100% - 50px)" : (isMobile ? "calc(100% - 32px)" : "calc(50% - 50px)")),
+            height: isFullscreen ? "100%"  : (isCropped ? "calc(100% - 50px)" : (isMobile ? "calc(48% - 32px)" : "calc(100% - 50px)")),
             borderRadius: isFullscreen ? "0px" : "6px",
           }}
-          style={{ y: animStep === 3 ? videoParallaxY : 0 }}
+          style={{ y: animStep === 3 ? videoParallaxY : 0, position: "absolute" }}
           transition={{ duration: 1.3, ease: [0.76, 0, 0.24, 1] }}
-          className="absolute z-10 flex items-center justify-center overflow-hidden bg-black"
+          className="z-10 flex items-center justify-center overflow-hidden bg-black"
         >
           <motion.video
             src="/videos/hero.mp4"
@@ -135,7 +140,7 @@ export default function Home() {
             loop
             muted
             playsInline
-            style={{ scale: 1.08 }} // slight over-scale so parallax never shows edges
+            style={{ scale: 1.08 }}
             className="absolute inset-0 w-full h-full object-cover"
           />
 
@@ -207,7 +212,7 @@ export default function Home() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, delay: 1 }}
-                className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center justify-center cursor-pointer group/btn z-30"
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center justify-center cursor-pointer group/btn z-30"
               >
                 <button className="w-12 h-12 rounded-full border border-white/50 flex items-center justify-center text-white backdrop-blur-sm group-hover/btn:scale-105 transition-transform mb-3 bg-white/10">
                   <Play fill="currentColor" size={14} className="ml-1" />
@@ -219,7 +224,6 @@ export default function Home() {
             )}
           </AnimatePresence>
         </motion.div>
-      </main>
       </div>
 
       <AboutSection />

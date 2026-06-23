@@ -24,7 +24,7 @@ const LETTERS = "URBANA".split("");
 const EASE: [number, number, number, number] = [0.76, 0, 0.24, 1];
 
 export default function Navbar() {
-  const { isOpen, setIsOpen } = useMenu();
+  const { isOpen, setIsOpen, isScrollLocked } = useMenu();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -35,7 +35,12 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full z-50 py-8 px-[25px]">
+      <motion.header
+        className="fixed top-0 left-0 w-full z-50 py-8 px-[25px]"
+        animate={{ opacity: isScrollLocked ? 0 : 1, y: isScrollLocked ? -16 : 0 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        style={{ pointerEvents: isScrollLocked ? "none" : "auto" }}
+      >
         <div className="flex items-center justify-between">
 
           {/* Logo */}
@@ -141,7 +146,7 @@ export default function Navbar() {
             </div>
           </button>
         </div>
-      </header>
+      </motion.header>
 
       {/* ── Fullscreen black menu overlay ── */}
       <AnimatePresence>
