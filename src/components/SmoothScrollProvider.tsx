@@ -20,9 +20,8 @@ export default function SmoothScrollProvider({
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      syncTouch: true, // Enables smooth scroll on mobile touchscreens
       wheelMultiplier: 0.8,
-      touchMultiplier: 2.0, // Increased slightly since syncTouch makes it feel heavier
+      touchMultiplier: 1.5,
     });
 
     lenisRef.current = lenis;
