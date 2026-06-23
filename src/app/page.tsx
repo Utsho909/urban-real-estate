@@ -67,7 +67,7 @@ export default function Home() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, delay: 0.3 }}
                 style={{ y: textParallaxY }}
-                className="w-full h-full relative overflow-visible"
+                className="w-full md:w-1/2 h-full relative overflow-visible px-6 md:px-20 flex flex-col justify-center pt-24 md:pt-0"
               >
                 {/* Vertical Text — far left */}
                 <div className="hidden md:flex absolute left-6 bottom-12 flex-col items-center gap-2">
@@ -79,37 +79,37 @@ export default function Home() {
                   </span>
                 </div>
 
-                {/* Subtitle */}
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.4 }}
-                  className="absolute left-6 md:left-20 font-serif italic text-foreground/70"
-                  style={{ top: "255px", fontSize: "32px" }}
-                >
-                  Diverse Industries, Singular Vision
-                </motion.p>
+                <div className="flex flex-col gap-6 md:gap-8 max-w-xl">
+                  {/* Subtitle */}
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.4 }}
+                    className="font-serif italic text-foreground/70 text-2xl md:text-[32px]"
+                  >
+                    Diverse Industries, Singular Vision
+                  </motion.p>
 
-                {/* Main heading */}
-                <motion.h1
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.9, delay: 0.55 }}
-                  className="absolute left-6 md:left-20 text-[7.5vw] leading-[0.9] font-sans font-normal tracking-tight text-foreground whitespace-nowrap"
-                  style={{ top: `${255 + 28 + 73.333}px` }}
-                >
-                  Building a Legacy <br /> of Excellence
-                </motion.h1>
+                  {/* Main heading */}
+                  <motion.h1
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.9, delay: 0.55 }}
+                    className="text-[11vw] md:text-[7.5vw] leading-[0.9] font-sans font-normal tracking-tight text-foreground whitespace-nowrap"
+                  >
+                    Building a Legacy <br /> of Excellence
+                  </motion.h1>
 
-                {/* Body copy */}
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.8 }}
-                  className="absolute bottom-10 left-6 md:left-20 font-serif italic text-base md:text-lg text-foreground/70 leading-relaxed max-w-xs"
-                >
-                  Expanding into new ventures across Real Estate, Hospitality, and beyond.
-                </motion.p>
+                  {/* Body copy */}
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.8 }}
+                    className="font-serif italic text-base md:text-lg text-foreground/70 leading-relaxed max-w-xs md:mt-12"
+                  >
+                    Expanding into new ventures across Real Estate, Hospitality, and beyond.
+                  </motion.p>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -119,10 +119,10 @@ export default function Home() {
         <motion.div
           initial={false}
           animate={{
-            top:    isFullscreen ? "-25px"  : (isCropped ? "25px"  : "180px"),
+            top:    isFullscreen ? "-25px"  : (isCropped ? "25px"  : (isMobile ? "50%" : "180px")),
             left:   isFullscreen ? "-25px"  : (isCropped ? "25px"  : (isMobile ? "0%"   : "50%")),
             width:  isFullscreen ? "100vw"  : (isCropped ? "calc(100% - 50px)" : (isMobile ? "100%" : "50%")),
-            height: isFullscreen ? "100vh"  : (isCropped ? "calc(100% - 50px)" : "calc(100% - 180px)"),
+            height: isFullscreen ? "100vh"  : (isCropped ? "calc(100% - 50px)" : (isMobile ? "50%" : "calc(100% - 180px)")),
             borderRadius: isFullscreen ? "0px" : "6px",
           }}
           style={{ y: animStep === 3 ? videoParallaxY : 0 }}
