@@ -1,9 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { X } from "lucide-react";
+import { useMenu } from "@/components/MenuContext";
 
 const images = [
   "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
@@ -24,7 +26,29 @@ const col3 = images.slice(6, 9);
 
 export default function GallerySection() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const { setIsScrollLocked } = useMenu();
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
+
+  // Lock scroll when lightbox is open
+  useEffect(() => {
+    if (selectedImage !== null) {
+      document.body.style.overflow = "hidden";
+      setIsScrollLocked(true);
+    } else {
+      document.body.style.overflow = "";
+      setIsScrollLocked(false);
+    }
+    return () => {
+      document.body.style.overflow = "";
+      setIsScrollLocked(false);
+    };
+  }, [selectedImage, setIsScrollLocked]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -56,7 +80,7 @@ export default function GallerySection() {
         
         {/* Column 1 */}
         <motion.div style={{ y: y1 }} className="flex flex-col gap-6 md:gap-12">
-          {col1.map((src, idx) => (
+          {col1.map((src) => (
             <div 
               key={src} 
               onClick={() => setSelectedImage(src)}
@@ -70,7 +94,7 @@ export default function GallerySection() {
 
         {/* Column 2 */}
         <motion.div style={{ y: y2 }} className="flex flex-col gap-6 md:gap-12 -mt-48">
-          {col2.map((src, idx) => (
+          {col2.map((src) => (
             <div 
               key={src} 
               onClick={() => setSelectedImage(src)}
@@ -84,7 +108,7 @@ export default function GallerySection() {
 
         {/* Column 3 */}
         <motion.div style={{ y: y3 }} className="flex flex-col gap-6 md:gap-12 mt-24">
-          {col3.map((src, idx) => (
+          {col3.map((src) => (
             <div 
               key={src} 
               onClick={() => setSelectedImage(src)}
@@ -99,43 +123,46 @@ export default function GallerySection() {
       </div>
 
       {/* Lightbox */}
-      <AnimatePresence>
-        {selectedImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedImage(null)}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-background/90 backdrop-blur-xl p-4 md:p-12 cursor-zoom-out"
-          >
-            <button 
-              className="absolute top-8 right-8 text-white bg-charcoal/50 p-2 rounded-full hover:bg-copper transition-colors z-[101]"
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedImage(null);
-              }}
-            >
-              <X size={24} />
-            </button>
+      {mounted && createPortal(
+        <AnimatePresence>
+          {selectedImage && (
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-6xl h-full max-h-[85vh] shadow-2xl rounded-sm overflow-hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedImage(null)}
+              className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 md:p-12 cursor-zoom-out"
             >
-              <Image
-                src={selectedImage}
-                alt="Selected Image"
-                fill
-                className="object-contain"
-                sizes="100vw"
-                priority
-              />
+              <button 
+                className="absolute top-8 right-8 text-white/60 hover:text-white transition-colors p-2 z-[101]"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedImage(null);
+                }}
+              >
+                <X size={24} />
+              </button>
+              <motion.div
+                initial={{ scale: 0.96, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 1.02, opacity: 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="relative w-full max-w-6xl h-[70vh] md:h-[85vh]"
+              >
+                <Image
+                  src={selectedImage}
+                  alt="Selected Image"
+                  fill
+                  className="object-contain"
+                  sizes="100vw"
+                  priority
+                />
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </section>
   );
 }

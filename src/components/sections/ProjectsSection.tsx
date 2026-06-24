@@ -32,7 +32,14 @@ const projects = [
   }
 ];
 
-function ProjectCard({ project, index, total }: { project: any, index: number, total: number }) {
+interface Project {
+  id: number;
+  title: string;
+  location: string;
+  image: string;
+}
+
+function ProjectCard({ project, index, total }: { project: Project, index: number, total: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,

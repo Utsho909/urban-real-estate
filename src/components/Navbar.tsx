@@ -8,10 +8,10 @@ import { useMenu } from "./MenuContext";
 
 const navLinks = [
   { name: "Home",       href: "/" },
-  { name: "About Us",   href: "#about" },
-  { name: "Projects",   href: "#projects" },
-  { name: "Gallery",    href: "#gallery" },
-  { name: "Contact Us", href: "#contact" },
+  { name: "About Us",   href: "/about" },
+  { name: "Projects",   href: "/projects" },
+  { name: "Gallery",    href: "/gallery" },
+  { name: "Contact Us", href: "/contact" },
 ];
 
 const secondaryLinks = [

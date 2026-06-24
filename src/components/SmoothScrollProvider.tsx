@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import Lenis from "lenis";
 import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 import { useMenu } from "./MenuContext";
 
 export default function SmoothScrollProvider({
@@ -12,6 +13,14 @@ export default function SmoothScrollProvider({
 }) {
   const lenisRef = useRef<Lenis | null>(null);
   const { isOpen, isScrollLocked } = useMenu();
+  const pathname = usePathname();
+
+  // Reset scroll to top on route changes
+  useEffect(() => {
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { immediate: true });
+    }
+  }, [pathname]);
 
   useEffect(() => {
     const lenis = new Lenis({

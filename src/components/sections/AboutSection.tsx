@@ -75,7 +75,7 @@ export default function AboutSection() {
               <blockquote className="text-xl md:text-2xl text-foreground/80 font-light leading-relaxed mb-12 border-l-2 border-copper pl-6 md:pl-8">
                 Urbana Group is an emerging business conglomerate with a prosperous and rewarding journey across diverse industries. We have a distinguished and rich history in Real Estate, Textiles, Export-oriented Footwear business, and Medical Testing services.
                 <br /><br />
-                We are now expanding into new ventures including Hotel management on fully owned lands in Kuakata and Cox's Bazar, a Resort near Dhaka, multiple Township Development Projects, and several Apartment Development Projects in prime locations of Dhaka.
+                We are now expanding into new ventures including Hotel management on fully owned lands in Kuakata and Cox&apos;s Bazar, a Resort near Dhaka, multiple Township Development Projects, and several Apartment Development Projects in prime locations of Dhaka.
               </blockquote>
               <p className="text-foreground/50 uppercase tracking-widest text-sm font-medium mb-16 md:mb-32">
                 — Urbana Group

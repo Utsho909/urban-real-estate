@@ -11,10 +11,10 @@ import GallerySection from "@/components/sections/GallerySection";
 import ContactSection from "@/components/sections/ContactSection";
 
 export default function Home() {
-  const [animStep, setAnimStep] = useState(0);
+  const { setIsScrollLocked, hasIntroPlayed, setHasIntroPlayed } = useMenu();
+  const [animStep, setAnimStep] = useState(hasIntroPlayed ? 3 : 0);
   const [isMobile, setIsMobile] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
-  const { setIsScrollLocked } = useMenu();
 
   const { scrollY } = useScroll();
   const videoParallaxY = useTransform(scrollY, [0, 800], [0, 120]);
@@ -39,11 +39,16 @@ export default function Home() {
   }, [animStep, setIsScrollLocked]);
 
   useEffect(() => {
+    if (hasIntroPlayed) return;
+
     const t1 = setTimeout(() => setAnimStep(1), 2000);
     const t2 = setTimeout(() => setAnimStep(2), 3500);
-    const t3 = setTimeout(() => setAnimStep(3), 4700);
+    const t3 = setTimeout(() => {
+      setAnimStep(3);
+      setHasIntroPlayed(true);
+    }, 4700);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
-  }, []);
+  }, [hasIntroPlayed, setHasIntroPlayed]);
 
   const isFullscreen = animStep <= 1;
   const isCropped = animStep === 2;
